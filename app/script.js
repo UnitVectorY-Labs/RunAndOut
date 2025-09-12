@@ -70,7 +70,20 @@
         vg.append(headIn, headV, headH);
 
         for (let i=0;i<maxInn;i++){
-          vg.append(div('cell', i+1), div('cell', state.innings.visitor[i] ?? 0), div('cell', state.innings.home[i] ?? 0));
+          const isCurrentInning = (i + 1) === state.inning;
+          const visitorCell = div('cell', state.innings.visitor[i] ?? 0);
+          const homeCell = div('cell', state.innings.home[i] ?? 0);
+          
+          // Highlight the current inning cell for the batting team
+          if (isCurrentInning) {
+            if (state.half === 'top') {
+              visitorCell.classList.add('current-inning');
+            } else {
+              homeCell.classList.add('current-inning');
+            }
+          }
+          
+          vg.append(div('cell', i+1), visitorCell, homeCell);
         }
 
         save();

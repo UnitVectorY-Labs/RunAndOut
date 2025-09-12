@@ -53,6 +53,7 @@
     .vgrid { display: grid; grid-template-columns: 70px 1fr 1fr; }
     .cell, .head { display: flex; align-items: center; justify-content: center; border-bottom: 1px solid #1f2937; border-right: 1px solid #1f2937; font-variant-numeric: tabular-nums; height: 48px; }
     .head { background: #0f1a33; color: #cbd5e1; font-weight: 700; padding: 0 6px; }
+    .cell.current-inning { background: #fbbf2444; border-color: #eab308; color: #fef3c7; font-weight: 800; }
     .row:last-child .cell { border-bottom: none; }
     .row .cell:last-child, .row .head:last-child { border-right: none; }
     .team-head.visitor { background: linear-gradient(180deg, #7f1d1d, var(--red-deep)); color: #fee2e2; }
