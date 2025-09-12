@@ -26,14 +26,15 @@
       backdrop-filter: blur(6px); background: #0b1022cc; border-bottom: 1px solid #1f2937;
     }
     .topbar { display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: center; }
+    .title-section { display: flex; align-items: center; gap: 12px; }
     .title {
-      justify-self: start; font-weight: 900; letter-spacing: .04em; text-transform: uppercase; padding: 8px 12px; border-radius: 999px; border: 1px solid #1f2937; background: #111827;
+      font-weight: 900; letter-spacing: .04em; text-transform: uppercase; padding: 8px 12px; border-radius: 999px; border: 1px solid #1f2937; background: #111827;
     }
     .title.visitor { background: var(--red-deep); color: #fff; border-color: #fecaca; }
     .title.home { background: var(--blue-deep); color: #fff; border-color: #bfdbfe; }
 
-    .outs { margin-top: 6px; display: inline-grid; grid-auto-flow: column; gap: 6px; align-items: center; }
-    .out-dot { width: 12px; height: 12px; border-radius: 50%; border: 2px solid #475569; }
+    .outs { display: inline-flex; gap: 8px; align-items: center; }
+    .out-dot { width: 16px; height: 16px; border-radius: 50%; border: 2px solid #475569; }
     .out-dot.filled { background: #f43f5e; border-color: #fb7185; }
 
     .menu-btn { justify-self: end; background: transparent; border: 1px solid #334155; color: var(--text); border-radius: 10px; width: 40px; height: 40px; display: grid; place-items: center; cursor: pointer; }
