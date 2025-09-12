@@ -1,0 +1,85 @@
+:root {
+      --red: #ef4444;          /* red-500 */
+      --red-deep: #b91c1c;     /* red-700 */
+      --blue: #3b82f6;         /* blue-500 */
+      --blue-deep: #1d4ed8;    /* blue-700 */
+      --bg: #0b0f1c;           /* dark */
+      --panel: #0f172a;        /* slate-900 */
+      --muted: #94a3b8;        /* slate-400 */
+      --text: #e5e7eb;         /* gray-200 */
+      --accent: #22c55e;       /* green-500 */
+    }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      color: var(--text);
+      background: var(--bg);
+      display: flex; flex-direction: column;
+    }
+
+    /* Top bar: title + hamburger on same line */
+    header {
+      padding: 10px 12px; position: sticky; top: 0; z-index: 10;
+      backdrop-filter: blur(6px); background: #0b1022cc; border-bottom: 1px solid #1f2937;
+    }
+    .topbar { display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: center; }
+    .title {
+      justify-self: start; font-weight: 900; letter-spacing: .04em; text-transform: uppercase; padding: 8px 12px; border-radius: 999px; border: 1px solid #1f2937; background: #111827;
+    }
+    .title.visitor { background: var(--red-deep); color: #fff; border-color: #fecaca; }
+    .title.home { background: var(--blue-deep); color: #fff; border-color: #bfdbfe; }
+
+    .outs { margin-top: 6px; display: inline-grid; grid-auto-flow: column; gap: 6px; align-items: center; }
+    .out-dot { width: 12px; height: 12px; border-radius: 50%; border: 2px solid #475569; }
+    .out-dot.filled { background: #f43f5e; border-color: #fb7185; }
+
+    .menu-btn { justify-self: end; background: transparent; border: 1px solid #334155; color: var(--text); border-radius: 10px; width: 40px; height: 40px; display: grid; place-items: center; cursor: pointer; }
+    .menu-btn:active { transform: translateY(1px); }
+    .hamburger { width: 20px; height: 2px; background: var(--text); position: relative; }
+    .hamburger::before, .hamburger::after { content: ""; position: absolute; left: 0; width: 20px; height: 2px; background: var(--text); }
+    .hamburger::before { top: -6px; }
+    .hamburger::after { top: 6px; }
+
+    /* Info bar */
+    .infobar { margin: 8px 12px 0; display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .chip { background: #0b1226; border: 1px solid #1f2937; border-radius: 12px; padding: 8px 10px; text-align: center; color: var(--muted); font-size: 13px; }
+    .chip strong { color: var(--text); }
+
+    /* Vertical innings grid with totals in headers */
+    .scoreboard { margin: 12px 12px 140px; background: #0b1226; border: 1px solid #1f2937; border-radius: 16px; overflow: hidden; }
+    .vgrid { display: grid; grid-template-columns: 70px 1fr 1fr; }
+    .cell, .head { display: flex; align-items: center; justify-content: center; border-bottom: 1px solid #1f2937; border-right: 1px solid #1f2937; font-variant-numeric: tabular-nums; height: 48px; }
+    .head { background: #0f1a33; color: #cbd5e1; font-weight: 700; padding: 0 6px; }
+    .row:last-child .cell { border-bottom: none; }
+    .row .cell:last-child, .row .head:last-child { border-right: none; }
+    .team-head.visitor { background: linear-gradient(180deg, #7f1d1d, var(--red-deep)); color: #fee2e2; }
+    .team-head.home    { background: linear-gradient(180deg, #0b3aa5, var(--blue-deep)); color: #dbeafe; }
+    .tot { opacity: .9; font-weight: 900; margin-left: 6px; }
+
+    /* Bottom controls: only Run and Out, split screen */
+    .controls { position: fixed; bottom: 0; left: 0; right: 0; background: #0b1022f2; backdrop-filter: blur(6px); border-top: 1px solid #1f2937; padding: 0; display: grid; grid-template-columns: 1fr 1fr; }
+    .btn { border: none; color: white; font-weight: 900; font-size: 22px; padding: 18px 14px; cursor: pointer; min-height: 96px; }
+    .btn:active { transform: translateY(1px); }
+    .btn.run { background: var(--accent); color: #06240f; }
+    .btn.out { background: #000; }
+
+    dialog { border: 1px solid #1f2937; border-radius: 16px; padding: 14px; background: var(--panel); color: var(--text); max-width: 460px; width: min(92vw, 460px); }
+    dialog::backdrop { background: #0008; }
+    .menu-items { display: grid; gap: 8px; }
+    .menu-items button { background: #0b1226; border: 1px solid #1f2937; color: var(--text); border-radius: 10px; padding: 12px; font-weight: 700; cursor: pointer; }
+    .menu-items button.danger { background: #7f1d1d; border-color: #fecaca; }
+
+    /* Settings sheet */
+    .cfg-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+    label { font-size: 14px; color: var(--muted); }
+    select { width: 100%; padding: 10px 12px; border-radius: 10px; border: 1px solid #273244; background: #0b1226; color: var(--text); font-size: 16px; }
+    .cfg-actions { display: grid; grid-auto-flow: column; gap: 10px; margin-top: 12px; }
+    .btn.ghost { background: #0b1226; color: var(--text); border: 1px solid #1f2937; font-size: 16px; font-weight: 700; min-height: 44px; }
+
+    @media (min-width: 820px) {
+      .btn { min-height: 84px; font-size: 20px; }
+      .scoreboard { margin-bottom: 120px; }
+    }

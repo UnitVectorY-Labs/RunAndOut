@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Kids Baseball Scorekeeper</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <div class="topbar">
+      <div>
+        <div class="title" id="title">Top of 1st</div>
+        <div class="outs" aria-label="Outs">
+          <div class="out-dot" id="out1"></div>
+          <div class="out-dot" id="out2"></div>
+          <div class="out-dot" id="out3"></div>
+        </div>
+      </div>
+      <button class="menu-btn" id="btn-menu" title="Menu"><span class="hamburger"></span></button>
+    </div>
+  </header>
+
+  <div class="infobar">
+    <div class="chip" id="chip-remaining">Time Left: <strong id="time-left">—</strong></div>
+    <div class="chip">Run Cap: <strong id="run-cap">—</strong></div>
+  </div>
+
+  <section class="scoreboard" aria-label="Score by Inning (Vertical)">
+    <div class="vgrid" id="vgrid">
+      <!-- dynamic vertical grid -->
+    </div>
+  </section>
+
+  <!-- Bottom controls: only Run and Out -->
+  <div class="controls">
+    <button class="btn run" id="btn-add-run">+ Run</button>
+    <button class="btn out" id="btn-add-out">+ Out</button>
+  </div>
+
+  <!-- Menu dialog -->
+  <dialog id="menu">
+    <div class="menu-items">
+      <button id="mi-settings">Settings</button>
+      <button id="mi-undo">Undo</button>
+      <button class="danger" id="mi-new">New Game</button>
+      <button id="mi-close">Close</button>
+    </div>
+  </dialog>
+
+  <!-- Settings dialog -->
+  <dialog id="cfg">
+    <form method="dialog" id="cfg-form">
+      <h3 style="margin: 0 0 6px;">Game Settings</h3>
+      <p style="margin: 0 0 8px; color: var(--muted);">Visitor always bats first. Timer starts when you press <em>Save</em>.</p>
+      <div class="cfg-row">
+        <div>
+          <label for="run-cap-select">Run Rule (per half-inning)</label>
+          <select id="run-cap-select">
+            <option value="6">6</option>
+            <option value="8">8</option>
+            <option value="0">No Cap</option>
+          </select>
+        </div>
+        <div>
+          <label for="length-select">Game Length</label>
+          <select id="length-select">
+            <option value="60">1:00 (60 min)</option>
+            <option value="80">1:20 (80 min)</option>
+            <option value="0">No Timer</option>
+          </select>
+        </div>
+      </div>
+      <div class="cfg-actions">
+        <button class="btn ghost" value="cancel">Cancel</button>
+        <button class="btn run" id="btn-save" value="start">Save</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="script.js"></script>
+</body>
+</html>
