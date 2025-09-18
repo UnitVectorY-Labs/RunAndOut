@@ -11,7 +11,14 @@
         outs: 0,
         totals: { visitor: 0, home: 0 },
         innings: { visitor: [0], home: [0] },
-        history: []
+        history: [],
+        // Recording features
+        recordingEnabled: false,
+        recordingStarted: false,
+        recordingStartTime: null,
+        gameTimerStarted: false,
+        timestamps: [],
+        lastTimestampTime: 0
       });
 
       // migrate older versions if found
@@ -24,6 +31,7 @@
 
       let state = load() || defaultState();
       let tickTimer = null;
+      let cooldownTimer = null;
 
       function save(){ localStorage.setItem(storeKey, JSON.stringify(state)); }
       function load(){ try { return JSON.parse(localStorage.getItem(storeKey)); } catch(e){ return null; } }
@@ -36,11 +44,16 @@
 
       function updateTimer(){
         const leftEl = $('#time-left');
-        if (!state.started || !state.startTime || !state.gameLengthMin){ leftEl.textContent = '—'; return; }
-        const now = Date.now();
-        const rem = Math.max(0, state.startTime + state.gameLengthMin*60000 - now);
-        const m = Math.floor(rem/60000), s = Math.floor((rem%60000)/1000);
-        leftEl.textContent = `${m}:${String(s).padStart(2,'0')}`;
+        
+        // Game timer (countdown)
+        if (!state.gameTimerStarted || !state.startTime || !state.gameLengthMin){ 
+          leftEl.textContent = '—'; 
+        } else {
+          const now = Date.now();
+          const rem = Math.max(0, state.startTime + state.gameLengthMin*60000 - now);
+          const m = Math.floor(rem/60000), s = Math.floor((rem%60000)/1000);
+          leftEl.textContent = `${m}:${String(s).padStart(2,'0')}`;
+        }
       }
 
       function render(){
@@ -55,6 +68,67 @@
         ['#out1','#out2','#out3'].forEach((id,i)=> $(id).classList.toggle('filled', i < state.outs));
 
         $('#run-cap').textContent = state.runCap ? state.runCap : '—';
+
+        // Show/hide timer controls based on recording enabled and configuration completed
+        const timerControls = $('#timer-controls');
+        const timerControlsBottom = $('#timer-controls-bottom');
+        const controls = $('.controls');
+        const gameConfigured = state.runCap !== undefined && state.gameLengthMin !== undefined;
+        
+        // Show timer controls if recording is enabled OR if game timer is available
+        const hasGameTimer = state.gameLengthMin > 0;
+        const showTimerControls = (state.recordingEnabled || hasGameTimer) && gameConfigured;
+        
+        if (showTimerControls) {
+          timerControls.style.display = 'block';
+          timerControlsBottom.style.display = 'grid';
+          
+          // Calculate grid columns based on visible buttons
+          let visibleButtons = [];
+          
+          // Show/hide individual timer buttons based on state
+          const startRecordingBtn = $('#btn-start-recording');
+          const startGameBtn = $('#btn-start-game');
+          const markTimestampBtn = $('#btn-mark-timestamp');
+          
+          // Show recording button only if recording is enabled and not started
+          if (state.recordingEnabled && !state.recordingStarted) {
+            startRecordingBtn.style.display = 'block';
+            visibleButtons.push('recording');
+          } else {
+            startRecordingBtn.style.display = 'none';
+          }
+          
+          // Show game timer button if there's actually a game timer and it's not started
+          if (hasGameTimer && !state.gameTimerStarted) {
+            startGameBtn.style.display = 'block';
+            visibleButtons.push('game');
+          } else {
+            startGameBtn.style.display = 'none';
+          }
+          
+          // Only show Mark Timestamp if recording is enabled and started, and not in cooldown
+          const now = Date.now();
+          const inCooldown = state.lastTimestampTime && (now - state.lastTimestampTime < 10000);
+          
+          if (state.recordingEnabled && state.recordingStarted && !inCooldown) {
+            markTimestampBtn.style.display = 'block';
+            visibleButtons.push('timestamp');
+          } else {
+            markTimestampBtn.style.display = 'none';
+          }
+          
+          // Set grid columns based on number of visible buttons
+          const columns = visibleButtons.length;
+          if (columns > 0) {
+            timerControlsBottom.style.gridTemplateColumns = `repeat(${columns}, 1fr)`;
+          }
+          
+          $('#timestamps').style.display = state.recordingStarted && state.timestamps.length > 0 ? 'block' : 'none';
+        } else {
+          timerControls.style.display = 'none';
+          timerControlsBottom.style.display = 'none';
+        }
 
         // Vertical innings grid (totals embedded in headers)
         const vg = $('#vgrid');
@@ -86,7 +160,31 @@
           vg.append(div('cell', i+1), visitorCell, homeCell);
         }
 
+        renderTimestamps();
         save();
+      }
+
+      function renderTimestamps(){
+        const container = $('#timestamps-container');
+        if (!container) return;
+        
+        container.innerHTML = '';
+        state.timestamps.forEach((ts, index) => {
+          const tsDiv = document.createElement('div');
+          tsDiv.className = 'timestamp-item';
+          tsDiv.innerHTML = `
+            <span class="timestamp-time">${ts.time}</span>
+            <span class="timestamp-context">${ts.half === 'top' ? 'Top' : 'Bottom'} ${ts.inning}</span>
+            <span class="timestamp-real">${ts.realTime}</span>
+          `;
+          container.appendChild(tsDiv);
+        });
+        
+        // Force a re-render of the timestamps section visibility
+        const timestampsSection = $('#timestamps');
+        if (timestampsSection) {
+          timestampsSection.style.display = state.recordingStarted && state.timestamps.length > 0 ? 'block' : 'none';
+        }
       }
 
       function childTot(n){ const s=document.createElement('span'); s.className='tot'; s.textContent = `(${n})`; return s; }
@@ -137,10 +235,72 @@
 
       function newGame(){
         if (!confirm('Start a new game? This will clear the current scoreboard.')) return;
+        if (cooldownTimer) clearTimeout(cooldownTimer);
         state = defaultState();
         save();
         openSettings(true);
         render();
+      }
+
+      // Timer control functions
+      function startRecordingTimer(){
+        if (state.recordingStarted) return;
+        state.recordingStarted = true;
+        state.recordingStartTime = Date.now();
+        $('#btn-start-recording').style.display = 'none';
+        $('#btn-mark-timestamp').style.display = 'block';
+        $('#timestamps').style.display = 'block';
+        $('#chip-recording').style.display = 'block';
+        render();
+      }
+
+      function startGameTimer(){
+        if (state.gameTimerStarted) return;
+        state.gameTimerStarted = true;
+        state.started = true;
+        state.startTime = Date.now();
+        $('#btn-start-game').style.display = 'none';
+        render();
+      }
+
+      function markTimestamp(){
+        if (!state.recordingStarted || !state.recordingStartTime) return;
+        
+        const now = Date.now();
+        
+        // Check 10-second cooldown
+        if (now - state.lastTimestampTime < 10000) {
+          return; // Do nothing if cooldown is active
+        }
+        
+        const elapsed = now - state.recordingStartTime;
+        const totalSec = Math.floor(elapsed / 1000);
+        const h = Math.floor(totalSec / 3600);
+        const m = Math.floor((totalSec % 3600) / 60);
+        const s = totalSec % 60;
+        const timeStr = `${h}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+        
+        const timestamp = {
+          time: timeStr,
+          elapsed: elapsed,
+          realTime: new Date(now).toLocaleTimeString(),
+          inning: state.inning,
+          half: state.half
+        };
+        
+        state.timestamps.push(timestamp);
+        state.lastTimestampTime = now;
+        
+        // Re-render to hide button and adjust layout
+        render();
+        renderTimestamps();
+        save();
+        
+        // Set timer to re-render when cooldown expires
+        if (cooldownTimer) clearTimeout(cooldownTimer);
+        cooldownTimer = setTimeout(() => {
+          render(); // This will show the button again
+        }, 10000);
       }
 
       // Settings
@@ -148,6 +308,7 @@
       function openSettings(first=false){
         $('#run-cap-select').value = String(state.runCap || 0);
         $('#length-select').value = String(state.gameLengthMin || 0);
+        $('#recording-enabled').checked = state.recordingEnabled || false;
         dlgSettings.showModal();
         if (first) $('#btn-save').focus();
       }
@@ -155,10 +316,16 @@
       $('#btn-save').addEventListener('click', (e)=>{
         const cap = parseInt($('#run-cap-select').value, 10);
         const len = parseInt($('#length-select').value, 10);
+        const recording = $('#recording-enabled').checked;
+        
         state.runCap = isNaN(cap)?0:cap;
         state.gameLengthMin = isNaN(len)?0:len;
-        if (!state.started){ state.started = true; state.startTime = Date.now(); }
-        else { state.startTime = Date.now(); }
+        state.recordingEnabled = recording;
+        
+        // Don't auto-start the game timer anymore - just mark game as configured
+        state.started = false;
+        state.startTime = null;
+        
         dlgSettings.close();
         render();
       });
@@ -175,11 +342,21 @@
       $('#btn-add-run').addEventListener('click', addRun);
       $('#btn-add-out').addEventListener('click', addOut);
 
+      // Timer controls
+      $('#btn-start-recording').addEventListener('click', startRecordingTimer);
+      $('#btn-start-game').addEventListener('click', startGameTimer);
+      $('#btn-mark-timestamp').addEventListener('click', markTimestamp);
+
       // Init
       function boot(){
         if (tickTimer) clearInterval(tickTimer);
+        if (cooldownTimer) clearTimeout(cooldownTimer);
         tickTimer = setInterval(updateTimer, 1000);
-        if (!state.started) openSettings(true);
+        
+        // Only open settings if game is completely unconfigured
+        const gameConfigured = state.runCap !== undefined && state.gameLengthMin !== undefined;
+        if (!gameConfigured) openSettings(true);
+        
         render();
         updateTimer();
       }

@@ -32,7 +32,22 @@
     </div>
   </section>
 
-  <!-- Bottom controls: only Run and Out -->
+  <!-- Timer controls and timestamps -->
+  <div id="timer-controls" class="timer-section" style="display: none;">
+    <div id="timestamps" class="timestamps-list" style="display: none;">
+      <h4>Recorded Timestamps</h4>
+      <div id="timestamps-container"></div>
+    </div>
+  </div>
+
+  <!-- Timer controls row (when recording enabled) -->
+  <div id="timer-controls-bottom" class="timer-controls-row" style="display: none;">
+    <button class="btn timer-btn" id="btn-start-recording" style="display: none;">Start Recording</button>
+    <button class="btn timer-btn" id="btn-start-game" style="display: none;">Start Game Timer</button>
+    <button class="btn timer-btn timestamp-btn" id="btn-mark-timestamp" style="display: none;">Mark Timestamp</button>
+  </div>
+
+  <!-- Bottom controls: Run and Out -->
   <div class="controls">
     <button class="btn run" id="btn-add-run">+ Run</button>
     <button class="btn out" id="btn-add-out">+ Out</button>
@@ -52,7 +67,7 @@
   <dialog id="cfg">
     <form method="dialog" id="cfg-form">
       <h3 style="margin: 0 0 6px;">Game Settings</h3>
-      <p style="margin: 0 0 8px; color: var(--muted);">Visitor always bats first. Timer starts when you press <em>Save</em>.</p>
+      <p style="margin: 0 0 8px; color: var(--muted);">Visitor always bats first. Start timers manually when ready.</p>
       <div class="cfg-row">
         <div>
           <label for="run-cap-select">Run Rule (per half-inning)</label>
@@ -69,6 +84,17 @@
             <option value="80">1:20 (80 min)</option>
             <option value="0">No Timer</option>
           </select>
+        </div>
+      </div>
+      <div class="cfg-row">
+        <div style="grid-column: 1 / -1;">
+          <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+            <input type="checkbox" id="recording-enabled" style="margin: 0;">
+            Enable Recording Timer
+          </label>
+          <p style="margin: 4px 0 0; color: var(--muted); font-size: 12px;">
+            Allows marking timestamps during the game for highlights
+          </p>
         </div>
       </div>
       <div class="cfg-actions">
