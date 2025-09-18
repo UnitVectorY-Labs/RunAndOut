@@ -293,7 +293,6 @@
         
         // Re-render to hide button and adjust layout
         render();
-        renderTimestamps();
         save();
         
         // Set timer to re-render when cooldown expires
