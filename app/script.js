@@ -322,8 +322,10 @@
         state.recordingEnabled = recording;
         
         // Don't auto-start the game timer anymore - just mark game as configured
-        state.started = false;
-        state.startTime = null;
+        if (!state.gameTimerStarted) {
+          state.started = false;
+          state.startTime = null;
+        }
         
         dlgSettings.close();
         render();
