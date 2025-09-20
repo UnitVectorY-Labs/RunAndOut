@@ -73,6 +73,7 @@
     const timerControls = $('#timer-controls');
     const timerControlsBottom = $('#timer-controls-bottom');
     const controls = $('.controls');
+    const mainContent = $('.main-content');
     const gameConfigured = state.runCap !== undefined && state.gameLengthMin !== undefined;
 
     // Show timer controls if recording is enabled OR if game timer is available
@@ -122,12 +123,20 @@
       const columns = visibleButtons.length;
       if (columns > 0) {
         timerControlsBottom.style.gridTemplateColumns = `repeat(${columns}, 1fr)`;
+        // Add class to adjust main content padding
+        if (mainContent) mainContent.classList.add('timer-controls-visible');
+      } else {
+        // Hide timer controls if no buttons are visible
+        timerControlsBottom.style.display = 'none';
+        if (mainContent) mainContent.classList.remove('timer-controls-visible');
       }
 
       $('#timestamps').style.display = state.recordingStarted && state.timestamps.length > 0 ? 'block' : 'none';
     } else {
       timerControls.style.display = 'none';
       timerControlsBottom.style.display = 'none';
+      // Remove class when timer controls are hidden
+      if (mainContent) mainContent.classList.remove('timer-controls-visible');
     }
 
     // Vertical innings grid (totals embedded in headers)
