@@ -18,6 +18,21 @@
       color: var(--text);
       background: var(--bg);
       display: flex; flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* Main scrollable content area */
+    .main-content {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding-bottom: 96px; /* Account for fixed bottom controls */
+    }
+
+    /* Adjust padding when timer controls are visible */
+    .main-content.timer-controls-visible {
+      padding-bottom: 192px; /* 96px main controls + 96px timer controls */
     }
 
     /* Top bar: title + hamburger on same line */
@@ -62,7 +77,7 @@
     .tot { opacity: .9; font-weight: 900; margin-left: 6px; }
 
     /* Timer controls section */
-    .timer-section { margin: 16px 12px 192px; } /* 96px + 96px for two button rows */
+    .timer-section { margin: 16px 12px 16px; }
     .timer-buttons { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 16px; }
     .timer-btn { 
       background: var(--blue); 
@@ -159,5 +174,13 @@
     @media (min-width: 820px) {
       .btn { min-height: 84px; font-size: 20px; }
       .timer-controls-row { bottom: 84px; }
-      .timer-section { margin-bottom: 168px; } /* 84px + 84px for smaller buttons */
+      
+      /* Adjust main content padding for smaller button heights on larger screens */
+      .main-content {
+        padding-bottom: 84px; /* Account for smaller button height */
+      }
+      
+      .main-content.timer-controls-visible {
+        padding-bottom: 168px; /* 84px main controls + 84px timer controls */
+      }
     }

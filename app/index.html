@@ -21,24 +21,27 @@
     </div>
   </header>
 
-  <div class="infobar">
-    <div class="chip" id="chip-remaining">Time Left: <strong id="time-left">—</strong></div>
-    <div class="chip">Run Cap: <strong id="run-cap">—</strong></div>
-  </div>
-
-  <section class="scoreboard" aria-label="Score by Inning (Vertical)">
-    <div class="vgrid" id="vgrid">
-      <!-- dynamic vertical grid -->
+  <!-- Main scrollable content area -->
+  <main class="main-content">
+    <div class="infobar">
+      <div class="chip" id="chip-remaining">Time Left: <strong id="time-left">—</strong></div>
+      <div class="chip">Run Cap: <strong id="run-cap">—</strong></div>
     </div>
-  </section>
 
-  <!-- Timer controls and timestamps -->
-  <div id="timer-controls" class="timer-section" style="display: none;">
-    <div id="timestamps" class="timestamps-list" style="display: none;">
-      <h4>Recorded Timestamps</h4>
-      <div id="timestamps-container"></div>
+    <section class="scoreboard" aria-label="Score by Inning (Vertical)">
+      <div class="vgrid" id="vgrid">
+        <!-- dynamic vertical grid -->
+      </div>
+    </section>
+
+    <!-- Timer controls and timestamps -->
+    <div id="timer-controls" class="timer-section" style="display: none;">
+      <div id="timestamps" class="timestamps-list" style="display: none;">
+        <h4>Recorded Timestamps</h4>
+        <div id="timestamps-container"></div>
+      </div>
     </div>
-  </div>
+  </main>
 
   <!-- Timer controls row (when recording enabled) -->
   <div id="timer-controls-bottom" class="timer-controls-row" style="display: none;">
