@@ -1,3 +1,5 @@
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT) [![Concept](https://img.shields.io/badge/Status-Concept-white)](https://guide.unitvectorylabs.com/bestpractices/status/#concept)
+
 # RunAndOut
 
 A minimal single-page web app for kids’ baseball and softball that tracks only runs, outs, innings, and a game timer with local persistence.
