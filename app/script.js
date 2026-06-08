@@ -177,8 +177,10 @@
     const container = $('#timestamps-container');
     if (!container) return;
 
+    const previousScrollTop = container.scrollTop;
+    const wasAtBottom = container.scrollHeight - previousScrollTop - container.clientHeight < 2;
     container.innerHTML = '';
-    state.timestamps.forEach((ts, index) => {
+    state.timestamps.forEach((ts) => {
       const tsDiv = document.createElement('div');
       tsDiv.className = 'timestamp-item';
       tsDiv.innerHTML = `
@@ -188,6 +190,12 @@
           `;
       container.appendChild(tsDiv);
     });
+
+    if (wasAtBottom) {
+      container.scrollTop = container.scrollHeight;
+    } else {
+      container.scrollTop = previousScrollTop;
+    }
 
     // Force a re-render of the timestamps section visibility
     const timestampsSection = $('#timestamps');
@@ -259,7 +267,6 @@
     $('#btn-start-recording').style.display = 'none';
     $('#btn-mark-timestamp').style.display = 'block';
     $('#timestamps').style.display = 'block';
-    $('#chip-recording').style.display = 'block';
     render();
   }
 

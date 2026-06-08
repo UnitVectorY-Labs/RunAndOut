@@ -19,14 +19,17 @@
       background: var(--bg);
       display: flex; flex-direction: column;
       height: 100vh;
+      height: 100dvh;
       overflow: hidden;
     }
 
     /* Main scrollable content area */
     .main-content {
       flex: 1;
+      min-height: 0;
       overflow-y: auto;
       overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
       padding-bottom: 96px; /* Account for fixed bottom controls */
     }
 
@@ -99,6 +102,14 @@
     /* Timestamps list */
     .timestamps-list { background: #0b1226; border: 1px solid #1f2937; border-radius: 12px; padding: 14px; }
     .timestamps-list h4 { margin: 0 0 12px; color: var(--text); font-size: 16px; }
+    #timestamps-container {
+      max-height: 320px;
+      max-height: min(40dvh, 320px);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-gutter: stable;
+    }
     .timestamp-item { 
       display: grid; 
       grid-template-columns: 80px 1fr auto; 
