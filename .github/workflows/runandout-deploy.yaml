@@ -4,10 +4,7 @@ on:
   push:
     branches: ["main"]
 
-permissions:
-  contents: read  # Required to clone the repository
-  pages: write    # Allows publishing to GitHub Pages
-  id-token: write # Required for the `actions/deploy-pages@v4`
+permissions: {}
 
 concurrency:
   group: deploy
@@ -16,6 +13,8 @@ concurrency:
 jobs:
   # Build job
   build:
+    permissions:
+      contents: read # Required to clone the repository
     runs-on: ubuntu-latest
     env:
       WEBSITE: ${{ secrets.WEBSITE }}
@@ -32,6 +31,9 @@ jobs:
 
   # Deployment job
   deploy:
+    permissions:
+      pages: write    # Required to publish to GitHub Pages
+      id-token: write # Required for deployment authentication
     environment:
       name: github-pages
       url: runandout.unitvectorylabs.com
